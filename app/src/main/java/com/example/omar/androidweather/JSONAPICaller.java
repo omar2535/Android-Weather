@@ -8,6 +8,8 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.io.IOException;
@@ -41,7 +43,14 @@ public class JSONAPICaller {
 
             @Override
             protected void onPostExecute(Object o) {
-                textView.setText(o.toString());
+                String resultString = o.toString();
+                try {
+                    JSONObject results = new JSONObject(resultString);
+                    WeatherParser weatherParser = new WeatherParser(results);
+                    textView.setText(weatherParser.getWeatherData());
+                }catch(JSONException e){
+                    e.printStackTrace();
+                }
             }
         }.execute();
     }
